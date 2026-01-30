@@ -5,6 +5,17 @@ A professional AI-powered dashboard for corporate bankruptcy prediction and fina
 1. **Standalone Streamlit Dashboard**: For rapid analysis and prototyping.
 2. **Full Stack Web Application**: A React frontend + Flask backend for a complete product experience.
 
+
+For Single Company
+<img width="1920" height="2488" alt="image" src="https://github.com/user-attachments/assets/ce76635a-37cd-441c-8995-a18b91bd27c0" />
+
+<img width="1920" height="2488" alt="image" src="https://github.com/user-attachments/assets/ce10b43a-cb55-42a5-a7f1-31e8dba1e5d5" />
+
+For Multiple Companies
+<img width="1920" height="1646" alt="image" src="https://github.com/user-attachments/assets/9fd850b7-cca6-411d-a092-d7386443f1bc" />
+
+
+
 ## Project Structure
 
 - **`app.py`**: Standalone Streamlit application.
@@ -25,7 +36,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ---
 
-## 🚀 Quick Start: Full Stack App
+## Quick Start: Full Stack App
 
 To run the complete application (Frontend + Backend) in one go, you can use the provided helper script or follow the manual steps below.
 
@@ -67,7 +78,8 @@ _The frontend will start on http://localhost:3000_
 
 ---
 
-## 📊 Alternative: Streamlit Dashboard
+
+## Alternative: Streamlit Dashboard
 
 If you prefer the standalone Python dashboard without the React frontend:
 
