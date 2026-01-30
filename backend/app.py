@@ -29,6 +29,13 @@ except FileNotFoundError:
 
 THRESHOLD = 0.40
 
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint."""
+    return jsonify({
+        'status': 'healthy',
+        'model_loaded': model is not None
+    })
 
 @app.route('/api/features', methods=['GET'])
 def get_features():
@@ -93,6 +100,57 @@ def predict_single():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/predict/batch', methods=['POST'])
+def predict_batch():
+    """Predict risk for multiple companies from CSV."""
+    if model is None:
+        return jsonify({'error': 'Model not loaded'}), 500
+    
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        batch_df = pd.read_csv(file)
+        
+        # Align columns with training features
+        n_rows = len(batch_df)
+        mean_matrix = np.tile(scaler.mean_, (n_rows, 1))
+        aligned_df = pd.DataFrame(mean_matrix, columns=feature_names)
+        
+        for col in batch_df.columns:
+            if col in aligned_df.columns:
+                aligned_df[col] = batch_df[col]
+        
+        batch_scaled = scaler.transform(aligned_df)
+        probabilities = model.predict_proba(batch_scaled)[:, 1]
+        
+        # Prepare results
+        results = []
+        for i, row in batch_df.iterrows():
+            risk_score = float(probabilities[i])
+            results.append({
+                'id': i + 1,
+                'riskScore': risk_score,
+                'status': 'HIGH RISK' if risk_score > THRESHOLD else 'Stable',
+                'data': row.to_dict()
+            })
+        
+        high_risk_count = sum(1 for r in results if r['status'] == 'HIGH RISK')
+        avg_risk = float(probabilities.mean())
+        
+        return jsonify({
+            'results': results,
+            'summary': {
+                'totalCompanies': len(results),
+                'highRiskCount': high_risk_count,
+                'stableCount': len(results) - high_risk_count,
+                'averageRisk': avg_risk
+            }
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 @app.route('/api/template', methods=['GET'])
 def get_template():
