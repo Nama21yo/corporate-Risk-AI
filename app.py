@@ -252,6 +252,100 @@ with tab1:
                 
                 st.markdown('</div>', unsafe_allow_html=True)
 
+# TAB 2: Batch Portfolio Audit
+with tab2:
+    st.header("Batch Portfolio Risk Scan")
+    st.markdown("""
+    **Portfolio Audit Mode**: Upload a CSV file containing financial data for multiple companies. 
+    The AI will scan the entire portfolio and flag high-risk entities.
+    """)
+    
+    col_dl, col_up = st.columns([1, 2])
+    
+    with col_dl:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.markdown("#### 1. Get Template")
+        st.markdown("Download the standard CSV template to prepare your data.")
+        
+        # Download Template Logic
+        dummy_data = pd.DataFrame(columns=feature_names)
+        csv_template = dummy_data.to_csv(index=False).encode('utf-8')
+        
+        st.download_button(
+            label="� Download CSV Template",
+            data=csv_template,
+            file_name="portfolio_template.csv",
+            mime="text/csv",
+            key="download_template"
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col_up:
+        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
+        st.markdown("#### 2. Upload Portfolio")
+        uploaded_file = st.file_uploader("Upload your populated CSV file", type=["csv"])
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    if uploaded_file is not None:
+        try:
+            with st.spinner("Scanning portfolio..."):
+                batch_df = pd.read_csv(uploaded_file)
+                
+                # Align columns: fill missing features with training mean to ensure neutral prediction
+                n_rows = len(batch_df)
+                mean_matrix = np.tile(scaler.mean_, (n_rows, 1))
+                aligned_df = pd.DataFrame(mean_matrix, columns=feature_names)
+                
+                for col in batch_df.columns:
+                    if col in aligned_df.columns:
+                        aligned_df[col] = batch_df[col]
+                
+                batch_scaled = scaler.transform(aligned_df)
+                probabilities = model.predict_proba(batch_scaled)[:, 1]
+                
+                THRESHOLD = 0.40
+                batch_df['Risk_Score'] = probabilities
+                batch_df['Status'] = np.where(probabilities > THRESHOLD, 'HIGH RISK', 'Stable')
+                
+                st.markdown("---")
+                st.subheader("Audit Findings")
+                
+                m_col1, m_col2, m_col3 = st.columns(3)
+                high_risk_count = batch_df[batch_df['Status'] == 'HIGH RISK'].shape[0]
+                avg_risk = probabilities.mean()
+                
+                with m_col1:
+                     st.metric("Total Companies", len(batch_df))
+                with m_col2:
+                     st.metric("High Risk Alerts", high_risk_count, delta="Attention Needed" if high_risk_count > 0 else "Clean", delta_color="inverse" if high_risk_count > 0 else "normal")
+                with m_col3:
+                     st.metric("Portfolio Average Risk", f"{avg_risk:.1%}")
+
+                st.markdown("#### Detail View")
+                
+                # Simple function to color rows in st.dataframe or st.data_editor
+                def highlight_risk(s):
+                    return ['background-color: #ffebee' if v == 'HIGH RISK' else 'background-color: #e8f5e9' for v in s]
+                
+                # Show key columns first
+                display_cols = ['Risk_Score', 'Status'] + [c for c in batch_df.columns if c not in ['Risk_Score', 'Status']]
+                
+                st.dataframe(
+                    batch_df[display_cols].style.apply(highlight_risk, subset=['Status']).format({'Risk_Score': '{:.2%}'}),
+                    use_container_width=True
+                )
+                
+                result_csv = batch_df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Download Risk Audit Report",
+                    data=result_csv,
+                    file_name="risk_audit_results.csv",
+                    mime="text/csv",
+                    key="download_report"
+                )
+
+        except Exception as e:
+            st.error(f"Error processing file: {e}")
 
 # Footer
 st.markdown("---")
