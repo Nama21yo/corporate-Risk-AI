@@ -74,3 +74,7 @@ npm run dev
 
 # Keep script running if npm run dev exits (unlikely unless error)
 wait $BACKEND_PID
+
+
+
+

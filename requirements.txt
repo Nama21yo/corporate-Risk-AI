@@ -267,3 +267,7 @@ wheel==0.45.1
 xkbregistry==0.3
 yt-dlp==2025.10.22
 zipp==3.23.0
+
+
+
+

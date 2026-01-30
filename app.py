@@ -350,3 +350,7 @@ with tab2:
 # Footer
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #aaa; font-size: 0.8em;'>© 2024 Financial AI Systems. Powered by Streamlit & SHAP.</div>", unsafe_allow_html=True)
+
+
+
+

@@ -21,7 +21,18 @@ For Multiple Companies
 - **`app.py`**: Standalone Streamlit application.
 - **`backend/`**: Flask REST API handling inference and data processing.
 - **`frontend/`**: Modern React/Vite dashboard communicating with the backend.
+- **`models/`**: Model artifacts and training notebook(s).
 - **`tests/`**: Sample datasets for portfolio testing.
+
+## Credit Scoring Notebook (models/credit-scoring-company-bankruptcy.ipynb)
+
+The notebook in the models folder ([models/credit-scoring-company-bankruptcy.ipynb](models/credit-scoring-company-bankruptcy.ipynb)) implements the end-to-end training flow for bankruptcy risk scoring:
+
+1. **Data loading** from the Kaggle company bankruptcy dataset and target normalization to `Bankrupt`.
+2. **EDA & cleaning**, including class-imbalance checks and correlation analysis for key risk/safety ratios.
+3. **Preprocessing** with train/test split, standardization, and SMOTE applied only on the training set.
+4. **Model training** for Logistic Regression and Random Forest, with evaluation via reports and confusion matrices.
+5. **Explainability** using SHAP for global feature impact and a deep-dive audit on the riskiest company.
 
 ## Prerequisites
 
