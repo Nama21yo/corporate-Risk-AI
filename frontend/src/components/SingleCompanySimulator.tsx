@@ -161,7 +161,7 @@ export function SingleCompanySimulator() {
                 <h3 className="font-semibold text-foreground">Solvency & Leverage</h3>
               </div>
               
-              {solvencyFeatures.map((feature, idx) => (
+              {solvencyFeatures.map((feature) => (
                 <FeatureSliderItem
                   key={feature.name}
                   feature={feature}
@@ -179,7 +179,7 @@ export function SingleCompanySimulator() {
                 <h3 className="font-semibold text-foreground">Profitability & Efficiency</h3>
               </div>
               
-              {profitabilityFeatures.map((feature, idx) => (
+              {profitabilityFeatures.map((feature) => (
                 <FeatureSliderItem
                   key={feature.name}
                   feature={feature}
@@ -310,9 +310,7 @@ export function SingleCompanySimulator() {
                   endAngle={0}
                 >
                   <RadialBar
-                    minAngle={15}
                     background
-                    clockWise
                     dataKey="value"
                     cornerRadius={10}
                   />

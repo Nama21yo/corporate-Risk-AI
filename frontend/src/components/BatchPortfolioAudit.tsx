@@ -151,23 +151,6 @@ export function BatchPortfolioAudit() {
     setError(null)
   }
 
-  const getDistributionData = (results: CompanyResult[]) => {
-    const ranges = [
-      { range: '0-20%', min: 0, max: 0.2, count: 0 },
-      { range: '20-40%', min: 0.2, max: 0.4, count: 0 },
-      { range: '40-60%', min: 0.4, max: 0.6, count: 0 },
-      { range: '60-80%', min: 0.6, max: 0.8, count: 0 },
-      { range: '80-100%', min: 0.8, max: 1.0, count: 0 }
-    ]
-
-    results.forEach(result => {
-      const range = ranges.find(r => result.riskScore >= r.min && result.riskScore < r.max)
-      if (range) range.count++
-    })
-
-    return ranges
-  }
-
   return (
     <div className="space-y-6">
       <Card>
