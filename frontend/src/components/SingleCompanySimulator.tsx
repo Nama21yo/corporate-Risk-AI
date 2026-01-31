@@ -22,6 +22,8 @@ import {
 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, RadialBarChart, RadialBar } from 'recharts'
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/$/, '')
+
 interface FeatureSlider {
   name: string
   label: string
@@ -105,7 +107,7 @@ export function SingleCompanySimulator() {
         userData[f.name] = f.value
       })
 
-      const response = await fetch('/api/predict/single', {
+      const response = await fetch(`${API_BASE}/predict/single`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)

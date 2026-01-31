@@ -16,11 +16,9 @@ import {
   BarChart3,
   X,
   FileText,
-  PieChart,
-  Shield,
-  Activity
 } from 'lucide-react'
-import { PieChart as RePieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/$/, '')
 
 interface CompanyResult {
   id: number
@@ -71,7 +69,7 @@ export function BatchPortfolioAudit() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await fetch('/api/predict/batch', {
+      const response = await fetch(`${API_BASE}/predict/batch`, {
         method: 'POST',
         body: formData
       })
@@ -452,13 +450,3 @@ export function BatchPortfolioAudit() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
